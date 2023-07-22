@@ -1,96 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Topilson Landy Runner</title>
+    <title>Topilson's Car Game</title>
     <style>
         body {
+            background-color: black;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
+            color: white;
             text-align: center;
-            margin: 20px;
+            padding-top: 100px;
+            margin: 0;
         }
 
         canvas {
             display: block;
             margin: 0 auto;
-            border: 1px solid #000;
-        }
-
-        #buttons {
-            text-align: center;
-            margin: 20px;
+            border: 1px solid white;
         }
 
         button {
             padding: 10px 20px;
-            margin: 5px;
+            margin-top: 20px;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Topilson Landy Runner</h1>
-    <canvas id="gameCanvas"></canvas>
-    <div id="buttons">
-        <button id="saveButton">Salvar</button>
-        <button id="breakButton">Quebrar</button>
-    </div>
+    <h1>Topilson</h1>
+    <button id="startButton">Iniciar Jogo</button>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Tamanho do canvas
-        canvas.width = 800;
-        canvas.height = 400;
+        const carWidth = 60;
+        const carHeight = 80;
 
-        // Posição inicial do cão
-        let dogX = 50;
-        const dogY = canvas.height / 2;
+        // Variáveis para controlar o carro Topilson
+        let topilsonX = canvas.width / 2 - carWidth / 2;
+        const topilsonY = canvas.height - carHeight - 20;
+        const topilsonSpeed = 5;
 
-        // Variáveis para controlar os objetos que vêm contra o cão
-        let objects = [];
-        let objectSpeed = 5;
+        // Variáveis para controlar os carros inimigos
+        let enemies = [];
+        const enemyWidth = 60;
+        const enemyHeight = 80;
+        const enemySpeed = 3;
 
         // Variáveis para controlar o jogo
-        let isGameOver = false;
+        let isGameOver = true;
         let score = 0;
 
-        // Função para desenhar o cão
-        function drawDog() {
-            ctx.fillStyle = 'brown';
-            ctx.fillRect(dogX, dogY, 50, 30);
+        // Função para desenhar o carro
+        function drawCar(x, y) {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(x, y, carWidth, carHeight);
         }
 
-        // Função para desenhar os objetos que vêm contra o cão
-        function drawObjects() {
+        // Função para desenhar os carros inimigos
+        function drawEnemies() {
             ctx.fillStyle = 'red';
-            objects.forEach(object => {
-                ctx.fillRect(object.x, object.y, 20, 20);
+            enemies.forEach(enemy => {
+                ctx.fillRect(enemy.x, enemy.y, enemyWidth, enemyHeight);
             });
         }
 
-        // Função para atualizar a posição dos objetos
-        function updateObjects() {
-            objects.forEach(object => {
-                object.x -= objectSpeed;
+        // Função para atualizar a posição dos carros inimigos
+        function updateEnemies() {
+            enemies.forEach(enemy => {
+                enemy.y += enemySpeed;
             });
 
-            // Remover objetos que saem do canvas
-            objects = objects.filter(object => object.x > 0);
+            // Remover carros inimigos que saem do canvas
+            enemies = enemies.filter(enemy => enemy.y < canvas.height);
         }
 
-        // Função para verificar colisões entre o cão e os objetos
+        // Função para verificar colisões entre o carro Topilson e os carros inimigos
         function checkCollisions() {
-            objects.forEach(object => {
+            enemies.forEach(enemy => {
                 if (
-                    dogX < object.x + 20 &&
-                    dogX + 50 > object.x &&
-                    dogY < object.y + 20 &&
-                    dogY + 30 > object.y
+                    topilsonX < enemy.x + enemyWidth &&
+                    topilsonX + carWidth > enemy.x &&
+                    topilsonY < enemy.y + enemyHeight &&
+                    topilsonY + carHeight > enemy.y
                 ) {
                     isGameOver = true;
                 }
@@ -101,41 +102,38 @@
         function animate() {
             if (!isGameOver) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawDog();
-                drawObjects();
-                updateObjects();
+                drawCar(topilsonX, topilsonY);
+                drawEnemies();
+                updateEnemies();
                 checkCollisions();
                 score++;
                 requestAnimationFrame(animate);
             } else {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = 'white';
                 ctx.font = '30px Arial';
-                ctx.fillText('Topilson Landy Perdeu', 250, 200);
+                ctx.fillText('Topilson Perdeu', 200, 200);
             }
         }
 
-        // Função para adicionar um objeto aleatório à lista de objetos
-        function addRandomObject() {
-            const randomY = Math.random() * canvas.height;
-            objects.push({ x: canvas.width, y: randomY });
+        // Função para criar um carro inimigo aleatório
+        function createEnemy() {
+            const randomX = Math.random() * (canvas.width - enemyWidth);
+            enemies.push({ x: randomX, y: -enemyHeight });
         }
 
-        // Evento para salvar os objetos (chamado pelo botão "Salvar")
-        document.getElementById('saveButton').addEventListener('click', () => {
-            objectSpeed += 1;
+        // Evento para iniciar o jogo (chamado pelo botão "Iniciar Jogo")
+        document.getElementById('startButton').addEventListener('click', () => {
+            if (isGameOver) {
+                isGameOver = false;
+                topilsonX = canvas.width / 2 - carWidth / 2;
+                score = 0;
+                enemies = [];
+                animate();
+                // Adicionar carros inimigos a cada 1 segundo
+                setInterval(createEnemy, 1000);
+            }
         });
-
-        // Evento para quebrar o jogo (chamado pelo botão "Quebrar")
-        document.getElementById('breakButton').addEventListener('click', () => {
-            isGameOver = true;
-        });
-
-        // Iniciar o jogo
-        animate();
-
-        // Adicionar objetos aleatórios a cada 1 segundo
-        setInterval(addRandomObject, 1000);
     </script>
 </body>
 </html>
