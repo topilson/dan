@@ -1,26 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Topilson's Car Game</title>
+    <title>Topilson Landy</title>
     <style>
         body {
-            background-color: black;
             font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            padding-top: 100px;
             margin: 0;
+            padding: 0;
+            background-image: url('caminho/para/sua/imagem-de-fundo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border: 1px solid white;
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
         }
 
-        button {
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav li a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .content {
+            padding: 50px;
+            text-align: center;
+            color: white;
+        }
+
+        footer {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        footer button {
             padding: 10px 20px;
-            margin-top: 20px;
             background-color: #3498db;
             border: none;
             color: white;
@@ -28,112 +62,42 @@
             cursor: pointer;
         }
 
-        button:hover {
+        footer button a {
+            text-decoration: none;
+            color: white;
+        }
+
+        footer button:hover {
             background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Topilson</h1>
-    <button id="startButton">Iniciar Jogo</button>
-    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <header>
+        <h1>Topilson Landy</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Portfólio</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content">
+        <!-- Conteúdo do site (vídeos, imagens, etc.) -->
+        <!-- Adicione aqui os vídeos e imagens que você deseja mostrar no site -->
+    </div>
+
+    <footer>
+        <button><a href="https://seulinkdecontato.com">Contacte-me</a></button>
+        <p>Todos os direitos reservados &copy; 2023 Topilson Landy</p>
+    </footer>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        const carWidth = 60;
-        const carHeight = 80;
-
-        // Variáveis para controlar o carro Topilson
-        let topilsonX = canvas.width / 2 - carWidth / 2;
-        const topilsonY = canvas.height - carHeight - 20;
-        const topilsonSpeed = 5;
-
-        // Variáveis para controlar os carros inimigos
-        let enemies = [];
-        const enemyWidth = 60;
-        const enemyHeight = 80;
-        const enemySpeed = 3;
-
-        // Variáveis para controlar o jogo
-        let isGameOver = true;
-        let score = 0;
-
-        // Função para desenhar o carro
-        function drawCar(x, y) {
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(x, y, carWidth, carHeight);
-        }
-
-        // Função para desenhar os carros inimigos
-        function drawEnemies() {
-            ctx.fillStyle = 'red';
-            enemies.forEach(enemy => {
-                ctx.fillRect(enemy.x, enemy.y, enemyWidth, enemyHeight);
-            });
-        }
-
-        // Função para atualizar a posição dos carros inimigos
-        function updateEnemies() {
-            enemies.forEach(enemy => {
-                enemy.y += enemySpeed;
-            });
-
-            // Remover carros inimigos que saem do canvas
-            enemies = enemies.filter(enemy => enemy.y < canvas.height);
-        }
-
-        // Função para verificar colisões entre o carro Topilson e os carros inimigos
-        function checkCollisions() {
-            enemies.forEach(enemy => {
-                if (
-                    topilsonX < enemy.x + enemyWidth &&
-                    topilsonX + carWidth > enemy.x &&
-                    topilsonY < enemy.y + enemyHeight &&
-                    topilsonY + carHeight > enemy.y
-                ) {
-                    isGameOver = true;
-                }
-            });
-        }
-
-        // Função para animar o jogo
-        function animate() {
-            if (!isGameOver) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawCar(topilsonX, topilsonY);
-                drawEnemies();
-                updateEnemies();
-                checkCollisions();
-                score++;
-                requestAnimationFrame(animate);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = '30px Arial';
-                ctx.fillText('Topilson Perdeu', 200, 200);
-            }
-        }
-
-        // Função para criar um carro inimigo aleatório
-        function createEnemy() {
-            const randomX = Math.random() * (canvas.width - enemyWidth);
-            enemies.push({ x: randomX, y: -enemyHeight });
-        }
-
-        // Evento para iniciar o jogo (chamado pelo botão "Iniciar Jogo")
-        document.getElementById('startButton').addEventListener('click', () => {
-            if (isGameOver) {
-                isGameOver = false;
-                topilsonX = canvas.width / 2 - carWidth / 2;
-                score = 0;
-                enemies = [];
-                animate();
-                // Adicionar carros inimigos a cada 1 segundo
-                setInterval(createEnemy, 1000);
-            }
-        });
+        // Coloque aqui qualquer código JavaScript adicional que você deseja para o site.
+        // Por exemplo, interações com os vídeos ou outras animações.
     </script>
 </body>
 </html>
